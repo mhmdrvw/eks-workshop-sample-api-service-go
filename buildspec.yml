@@ -19,17 +19,19 @@ phases:
         - $(aws ecr get-login --no-include-email)
         - export KUBECONFIG=$HOME/.kube/config
         - AWS_ACCOUNT_ID="726272455735"
+        - REPO="eks-workshop-ecrdockerrepository-wnaodwrkkssx"
   build:
     commands:
       - echo Building and tagging container
       - echo $AWS_ACCOUNT_ID
       - echo $REPOSITORY_NAME
+      - echo $REPOSITORY_URI
       - docker build -t $REPOSITORY_NAME .
-      - docker tag $REPOSITORY_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:latest
+      - docker tag $REPOSITORY_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPO:latest
   post_build:
     commands:
       - echo Pushing docker image
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPO:latest
       - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
       - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
