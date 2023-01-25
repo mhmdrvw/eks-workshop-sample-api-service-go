@@ -26,6 +26,7 @@ phases:
       - echo $AWS_ACCOUNT_ID
       - echo $REPOSITORY_NAME
       - echo $REPOSITORY_URI
+      - echo $EKS_KUBECTL_ROLE_ARN
       - docker build -t $REPOSITORY_NAME .
       - docker tag $REPOSITORY_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPO:latest
   post_build:
